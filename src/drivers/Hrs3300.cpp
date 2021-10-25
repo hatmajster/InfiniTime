@@ -36,8 +36,8 @@ void Hrs3300::Init() {
   // HRS and ALS both in 16-bit mode
   WriteRegister(static_cast<uint8_t>(Registers::Res), 0x88);
 
-  // 64x gain
-  WriteRegister(static_cast<uint8_t>(Registers::Hgain), 0x10);
+  // 8x gain, reduced value
+  WriteRegister(static_cast<uint8_t>(Registers::Hgain), 0xc);
 }
 
 void Hrs3300::Enable() {
@@ -68,11 +68,11 @@ uint16_t Hrs3300::ReadAls() {
   return (m << 3) | ((h & 0x3f) << 11) | (l & 0x07);
 }
 
-void Hrs3300::SetGain(uint8_t gain) {
+void Hrs3300::SetGain(Controllers::Settings::HeartRateGain gain) {
   constexpr uint8_t maxGain = 64U;
-  gain = std::min(gain, maxGain);
+  uint8_t value = std::min(static_cast<uint8_t>(gain), maxGain);
   uint8_t hgain = 0;
-  while ((1 << hgain) < gain) {
+  while ((1 << hgain) < value) {
     ++hgain;
   }
 

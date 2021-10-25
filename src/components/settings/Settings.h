@@ -25,6 +25,13 @@ namespace Pinetime {
         Colors ColorBar = Colors::Teal;
         Colors ColorBG = Colors::Black;
       };
+      enum class HeartRateGain : uint8_t {
+        Gain1 = 1,
+        Gain2 = 2,
+        Gain4 = 4,
+        Gain8 = 8,
+        Gain64 = 64,
+      };
 
       Settings(Pinetime::Controllers::FS& fs);
 
@@ -151,19 +158,71 @@ namespace Pinetime {
         return settings.brightLevel;
       };
 
-      void SetStepsGoal( uint32_t goal ) { 
-        if ( goal != settings.stepsGoal ) {
+      void SetStepsGoal(uint32_t goal) {
+        if (goal != settings.stepsGoal) {
           settingsChanged = true;
         }
-        settings.stepsGoal = goal; 
+        settings.stepsGoal = goal;
       };
-      
-      uint32_t GetStepsGoal() const { return settings.stepsGoal; };
+
+      uint32_t GetStepsGoal() const {
+        return settings.stepsGoal;
+      };
+
+      void SetHeartSensorGain(HeartRateGain gain) {
+        if (gain != settings.heartSensorGain) {
+          settingsChanged = true;
+        }
+        settings.heartSensorGain = gain;
+      };
+      HeartRateGain GetHeartSensorGain() const {
+        return settings.heartSensorGain;
+      };
+      void HeartSensorGainIncrease() {
+        if (settings.heartSensorGain == HeartRateGain::Gain64) {
+          return;
+        }
+        settingsChanged = true;
+        switch (settings.heartSensorGain) {
+          case HeartRateGain::Gain1:
+            settings.heartSensorGain = HeartRateGain::Gain2;
+            return;
+          case HeartRateGain::Gain2:
+            settings.heartSensorGain = HeartRateGain::Gain4;
+            return;
+          case HeartRateGain::Gain4:
+            settings.heartSensorGain = HeartRateGain::Gain8;
+            return;
+          case HeartRateGain::Gain8:
+            settings.heartSensorGain = HeartRateGain::Gain64;
+            return;
+        }
+      };
+      void HeartSensorGainDecrease() {
+        if (settings.heartSensorGain == HeartRateGain::Gain1) {
+          return;
+        }
+        settingsChanged = true;
+        switch (settings.heartSensorGain) {
+          case HeartRateGain::Gain2:
+            settings.heartSensorGain = HeartRateGain::Gain1;
+            return;
+          case HeartRateGain::Gain4:
+            settings.heartSensorGain = HeartRateGain::Gain2;
+            return;
+          case HeartRateGain::Gain8:
+            settings.heartSensorGain = HeartRateGain::Gain4;
+            return;
+          case HeartRateGain::Gain64:
+            settings.heartSensorGain = HeartRateGain::Gain8;
+            return;
+        }
+      };
 
     private:
       Pinetime::Controllers::FS& fs;
 
-      static constexpr uint32_t settingsVersion = 0x0002;
+      static constexpr uint32_t settingsVersion = 0x0003;
       struct SettingsData {
         uint32_t version = settingsVersion;
         uint32_t stepsGoal = 10000;
@@ -173,6 +232,7 @@ namespace Pinetime {
         Notification notificationStatus = Notification::ON;
 
         uint8_t clockFace = 0;
+        HeartRateGain heartSensorGain = HeartRateGain::Gain8;
 
         PineTimeStyle PTS;
 

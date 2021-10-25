@@ -3,6 +3,7 @@
 #include <task.h>
 #include <queue.h>
 #include <components/heartrate/Ppg.h>
+#include <components/settings/Settings.h>
 
 namespace Pinetime {
   namespace Drivers {
@@ -17,7 +18,9 @@ namespace Pinetime {
       enum class Messages : uint8_t { GoToSleep, WakeUp, StartMeasurement, StopMeasurement };
       enum class States { Idle, Running };
 
-      explicit HeartRateTask(Drivers::Hrs3300& heartRateSensor, Controllers::HeartRateController& controller);
+      explicit HeartRateTask(Drivers::Hrs3300& heartRateSensor,
+                             Controllers::HeartRateController& controller,
+                             Pinetime::Controllers::Settings& settingsController);
       void Start();
       void Work();
       void PushMessage(Messages msg);
@@ -32,6 +35,7 @@ namespace Pinetime {
       States state = States::Running;
       Drivers::Hrs3300& heartRateSensor;
       Controllers::HeartRateController& controller;
+      Pinetime::Controllers::Settings& settingsController;
       Controllers::Ppg ppg;
       bool measurementStarted = false;
     };

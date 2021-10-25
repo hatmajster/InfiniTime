@@ -36,6 +36,7 @@ namespace Pinetime {
       SettingSetDate,
       SettingSetTime,
       Error,
+      SettingHeartRate
     };
   }
 }

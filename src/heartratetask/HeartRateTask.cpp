@@ -5,8 +5,10 @@
 
 using namespace Pinetime::Applications;
 
-HeartRateTask::HeartRateTask(Drivers::Hrs3300& heartRateSensor, Controllers::HeartRateController& controller)
-  : heartRateSensor {heartRateSensor}, controller {controller}, ppg{} {
+HeartRateTask::HeartRateTask(Drivers::Hrs3300& heartRateSensor,
+                             Controllers::HeartRateController& controller,
+                             Pinetime::Controllers::Settings& settingsController)
+  : heartRateSensor {heartRateSensor}, controller {controller}, settingsController {settingsController}, ppg {} {
 }
 
 void HeartRateTask::Start() {
@@ -90,6 +92,7 @@ void HeartRateTask::PushMessage(HeartRateTask::Messages msg) {
 }
 
 void HeartRateTask::StartMeasurement() {
+  heartRateSensor.SetGain(settingsController.GetHeartSensorGain());
   heartRateSensor.Enable();
   vTaskDelay(100);
   ppg.SetOffset(static_cast<float>(heartRateSensor.ReadHrs()));

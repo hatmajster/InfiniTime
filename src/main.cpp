@@ -99,9 +99,6 @@ Pinetime::Controllers::Ble bleController;
 static constexpr uint8_t pinTouchIrq = Pinetime::PinMap::Cst816sIrq;
 static constexpr uint8_t pinPowerPresentIrq = Pinetime::PinMap::PowerPresent;
 
-Pinetime::Controllers::HeartRateController heartRateController;
-Pinetime::Applications::HeartRateTask heartRateApp(heartRateSensor, heartRateController);
-
 Pinetime::Controllers::DateTime dateTimeController;
 Pinetime::Drivers::Watchdog watchdog;
 Pinetime::Drivers::WatchdogView watchdogView(watchdog);
@@ -114,6 +111,9 @@ Pinetime::Controllers::TouchHandler touchHandler(touchPanel, lvgl);
 Pinetime::Controllers::FS fs {spiNorFlash};
 Pinetime::Controllers::Settings settingsController {fs};
 Pinetime::Controllers::MotorController motorController {};
+
+Pinetime::Controllers::HeartRateController heartRateController;
+Pinetime::Applications::HeartRateTask heartRateApp(heartRateSensor, heartRateController, settingsController);
 
 Pinetime::Applications::DisplayApp displayApp(lcd,
                                               lvgl,

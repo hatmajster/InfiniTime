@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TwiMaster.h"
+#include "components/settings/Settings.h"
 
 namespace Pinetime {
   namespace Drivers {
@@ -32,7 +33,7 @@ namespace Pinetime {
       void Disable();
       uint16_t ReadHrs();
       uint16_t ReadAls();
-      void SetGain(uint8_t gain);
+      void SetGain(Controllers::Settings::HeartRateGain gain);
       void SetDrive(uint8_t drive);
 
     private:
